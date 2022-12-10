@@ -1,2 +1,2 @@
-pyinstaller
-skyfield
+pyinstaller==5.7.0
+skyfield==1.45
