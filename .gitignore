@@ -1,0 +1,8 @@
+*.pyc
+*.log
+*.spec
+.coverage
+htmlcov/*
+venv*
+dist/*
+build/*
