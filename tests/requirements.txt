@@ -4,3 +4,4 @@ pep257
 pytest
 pytest-cov
 radon
+codacy-coverage
