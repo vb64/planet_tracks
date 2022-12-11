@@ -1,5 +1,6 @@
 """Console client."""
 import sys
+from skyfield.api import Loader
 from cli_options import PARSER, VERSION
 
 COPYRIGHTS = '(C) by Vitaly Bogomolov 2022'
@@ -12,6 +13,10 @@ def main(argv, _options):
     if not argv:
         PARSER.print_usage()
         return 1
+
+    load = Loader('skyfield-data', verbose=False)
+    eph = load('de421.bsp')
+    print(eph['Sun'])
 
     return 0
 
