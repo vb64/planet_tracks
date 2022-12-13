@@ -7,9 +7,6 @@ from cli_options import PARSER, VERSION
 COPYRIGHTS = '(C) by Vitaly Bogomolov 2022'
 OPTS = None
 
-STEP = 20  # seconds
-MIN_ELEVATION = 1.0  # degree
-LENGTH = 60 * 60 * 24 * 5  # 5 days
 START = datetime(2022, 12, 12).replace(tzinfo=timezone.utc)
 
 
@@ -47,7 +44,7 @@ def dump_loops(loops):
         print()
 
 
-def main(argv, _options):
+def main(argv, options):
     """Entry point."""
     print("Planet tracks utility v.{}. {}".format(VERSION, COPYRIGHTS))
     if len(argv) != 3:
@@ -61,7 +58,15 @@ def main(argv, _options):
     start = START
 
     print(argv[0], 'from', start)
-    dump_loops(make_loops(location, eph[argv[0]], start, load.timescale(), LENGTH, STEP, MIN_ELEVATION))
+    dump_loops(make_loops(
+      location,
+      eph[argv[0]],
+      start,
+      load.timescale(),
+      options.length,
+      options.step,
+      options.min_elevation
+    ))
 
     return 0
 
