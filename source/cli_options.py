@@ -29,3 +29,9 @@ PARSER.add_option(
   default=1,
   help="Minimal planet elevation in degrees above horizon. Default is 1."
 )
+PARSER.add_option(
+  "--utc",
+  dest="utcnow",
+  default=None,
+  help="Set UTC time for start calculating. Format: 2022-01-31:23:00 Default is now."
+)

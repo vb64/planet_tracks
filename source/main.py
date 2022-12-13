@@ -7,8 +7,6 @@ from cli_options import PARSER, VERSION
 COPYRIGHTS = '(C) by Vitaly Bogomolov 2022'
 OPTS = None
 
-START = datetime(2022, 12, 12).replace(tzinfo=timezone.utc)
-
 
 def make_loops(location, planet, start, tscale, length, step, border):
     """Create data for given location and planet."""
@@ -55,7 +53,11 @@ def main(argv, options):
     load = Loader('skyfield-data', verbose=False)
     eph = load('de421.bsp')
     location = eph['earth'] + wgs84.latlon(float(argv[1]), float(argv[2]))
-    start = START
+
+    start = datetime.utcnow()
+    if options.utcnow:
+        start = datetime.strptime(options.utcnow, '%Y-%m-%d:%H:%M')
+    start = start.replace(tzinfo=timezone.utc)
 
     print(argv[0], 'from', start)
     dump_loops(make_loops(

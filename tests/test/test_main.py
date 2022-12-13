@@ -23,6 +23,9 @@ class TestMain(TestBase):
         saved = main.make_loops
         main.make_loops = lambda location, planet, start, tscale, length, step, border: []
         assert main.main(['sun', str(self.sar_lat), str(self.sar_lon)], self.options) == 0
+
+        self.options.utcnow = '2022-12-12:10:00'
+        assert main.main(['sun', str(self.sar_lat), str(self.sar_lon)], self.options) == 0
         main.make_loops = saved
 
     def test_make_loops(self):
