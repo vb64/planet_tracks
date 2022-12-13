@@ -38,3 +38,4 @@ class TestMain(TestBase):
           10
         )
         assert len(loops) == 2
+        assert main.dump_loops(loops) is None

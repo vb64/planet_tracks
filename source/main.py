@@ -26,7 +26,7 @@ def make_loops(location, planet, start, tscale, length, step, border):
         ptime = tscale.from_datetime(start + timedelta(seconds=i * step))
         elevation, azimuth,  *_ = location.at(ptime).observe(planet).apparent().altaz()
         if elevation.degrees < border:
-            if loop:
+            if loop:  # pragma: no branch
                 loops.append(loop)
                 loop = None
             continue
