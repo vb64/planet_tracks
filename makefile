@@ -12,6 +12,8 @@ PYTHON = ./venv/bin/python
 COVERAGE = ./venv/bin/coverage
 endif
 
+SKYDATA = skyfield/data
+SKYBSP = skyfield-data
 SOURCE = source
 TESTS = tests
 
@@ -39,7 +41,7 @@ pep257:
 	$(PYTHON) -m pep257 --match='.*\.py' $(TESTS)/test
 
 exe:
-	$(PYINSTALLER) --paths=$(SOURCE) --onefile --name planet-tracks $(SOURCE)/main.py
+	$(PYINSTALLER) --paths=$(SOURCE) --onefile --name planet-tracks $(SOURCE)/main.py --add-data '$(SKYBSP);$(SKYBSP)' --add-data 'venv/Lib/site-packages/$(SKYDATA);$(SKYDATA)'
 
 setup: setup_python setup_pip
 
