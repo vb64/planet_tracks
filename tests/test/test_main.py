@@ -2,6 +2,7 @@
 
 make test T=test_main.py
 """
+from datetime import datetime, timezone
 from skyfield.api import N, E, wgs84, Loader
 from . import TestBase
 
@@ -28,12 +29,14 @@ class TestMain(TestBase):
 
         # moon = eph['moon']
         sun = eph['sun']
+        start = datetime(2022, 12, 12, 10).replace(tzinfo=timezone.utc)
 
-        dtime = tscale.utc(2022, 12, 12, 10)
+        dtime = tscale.from_datetime(start)
         point_at = point.at(dtime)
         elevation, azimuth, distance = point_at.observe(sun).apparent().altaz()
 
-        print("Sun altitude: {} azimuth: {} distance: {} km".format(
+        print("Sun {} altitude: {} azimuth: {} distance: {} km".format(
+          dtime.astimezone(timezone.utc),
           round(elevation.degrees, 6),
           round(azimuth.degrees, 6),
           int(distance.km)
