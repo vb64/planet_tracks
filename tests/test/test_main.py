@@ -10,6 +10,10 @@ from . import TestBase
 class TestMain(TestBase):
     """Tests console client."""
 
+    # saratov
+    sar_lat = 51.551750
+    sar_lon = 45.964380
+
     def test_args(self):
         """Call app with various args."""
         import main
@@ -18,7 +22,7 @@ class TestMain(TestBase):
 
         saved = main.make_loops
         main.make_loops = lambda location, planet, start, tscale, length, step, border: []
-        assert main.main(['xxx'], self.options) == 0
+        assert main.main(['sun', str(self.sar_lat), str(self.sar_lon)], self.options) == 0
         main.make_loops = saved
 
     def test_make_loops(self):
@@ -27,7 +31,7 @@ class TestMain(TestBase):
 
         load = Loader('skyfield-data', verbose=False)
         eph = load('de421.bsp')
-        location = eph['earth'] + wgs84.latlon(51.551750, 45.964380)  # saratov
+        location = eph['earth'] + wgs84.latlon(self.sar_lat, self.sar_lon)
 
         loops = main.make_loops(
           location, eph['sun'],

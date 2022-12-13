@@ -7,10 +7,6 @@ from cli_options import PARSER, VERSION
 COPYRIGHTS = '(C) by Vitaly Bogomolov 2022'
 OPTS = None
 
-LAT = 51.551750
-LON = 45.964380
-PLANET = 'sun'
-
 STEP = 20  # seconds
 MIN_ELEVATION = 1.0  # degree
 LENGTH = 60 * 60 * 24 * 5  # 5 days
@@ -54,18 +50,18 @@ def dump_loops(loops):
 def main(argv, _options):
     """Entry point."""
     print("Planet tracks utility v.{}. {}".format(VERSION, COPYRIGHTS))
-    if not argv:
+    if len(argv) != 3:
         PARSER.print_usage()
         return 1
 
     # https://rhodesmill.org/skyfield/examples.html#at-what-angle-in-the-sky-is-the-crescent-moon
     load = Loader('skyfield-data', verbose=False)
     eph = load('de421.bsp')
-    location = eph['earth'] + wgs84.latlon(LAT, LON)  # saratov
+    location = eph['earth'] + wgs84.latlon(float(argv[1]), float(argv[2]))
     start = START
 
-    print(PLANET, 'from', start)
-    dump_loops(make_loops(location, eph[PLANET], start, load.timescale(), LENGTH, STEP, MIN_ELEVATION))
+    print(argv[0], 'from', start)
+    dump_loops(make_loops(location, eph[argv[0]], start, load.timescale(), LENGTH, STEP, MIN_ELEVATION))
 
     return 0
 

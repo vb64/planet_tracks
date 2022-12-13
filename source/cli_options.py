@@ -1,7 +1,7 @@
 """CLI options."""
 from optparse import OptionParser
 
-USAGE = '%prog lat lon planet_name'
+USAGE = '%prog planet_name lat lon'
 VERSION = '1.0'
 PARSER = OptionParser(
   usage=USAGE,
