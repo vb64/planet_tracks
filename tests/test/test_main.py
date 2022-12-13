@@ -3,7 +3,7 @@
 make test T=test_main.py
 """
 from datetime import datetime, timezone
-from skyfield.api import N, E, wgs84, Loader
+from skyfield.api import wgs84, Loader
 from . import TestBase
 
 
@@ -12,32 +12,29 @@ class TestMain(TestBase):
 
     def test_args(self):
         """Call app with various args."""
-        from main import main
+        import main
 
-        assert main([], self.options) == 1
-        assert main(['xxx'], self.options) == 0
+        assert main.main([], self.options) == 1
 
-    def test_load(self):
-        """Any tests."""
-        # https://rhodesmill.org/skyfield/examples.html#at-what-angle-in-the-sky-is-the-crescent-moon
+        saved = main.make_loops
+        main.make_loops = lambda location, planet, start, tscale, length, step, border: []
+        assert main.main(['xxx'], self.options) == 0
+        main.make_loops = saved
+
+    def test_make_loops(self):
+        """Function make_loops."""
+        import main
+
         load = Loader('skyfield-data', verbose=False)
         eph = load('de421.bsp')
+        location = eph['earth'] + wgs84.latlon(51.551750, 45.964380)  # saratov
 
-        tscale = load.timescale()
-        earth = eph['earth']
-        point = earth + wgs84.latlon(51.551750 * N, 45.964380 * E)  # saratov
-
-        # moon = eph['moon']
-        sun = eph['sun']
-        start = datetime(2022, 12, 12, 10).replace(tzinfo=timezone.utc)
-
-        dtime = tscale.from_datetime(start)
-        point_at = point.at(dtime)
-        elevation, azimuth, distance = point_at.observe(sun).apparent().altaz()
-
-        print("Sun {} altitude: {} azimuth: {} distance: {} km".format(
-          dtime.astimezone(timezone.utc),
-          round(elevation.degrees, 6),
-          round(azimuth.degrees, 6),
-          int(distance.km)
-        ))
+        loops = main.make_loops(
+          location, eph['sun'],
+          datetime(2022, 12, 12, 10).replace(tzinfo=timezone.utc),
+          load.timescale(),
+          60 * 60 * 24 * 2,
+          60 * 30,
+          10
+        )
+        assert len(loops) == 2
