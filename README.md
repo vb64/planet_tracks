@@ -9,13 +9,13 @@ Console app for calculating Sun, Moon, etc coordinates for given point at the Ea
 Next call saves to file `sun_xxxx.csv` in current dir the track of the Sun for location at latitude 51.551750 north degrees and longitude 45.964380 eastern degrees (Russia, Saratov).
 
 ```
-source//main.py sun 51.551750 45.964380
+source/main.py sun 51.551750 45.964380
 ```
 
 If you want location with south latitude / west longitude, use negative values. For example, Rio de Janeiro, Brazil.
 
 ```
-source//main.py moon -22.908333 -43.196388
+source/main.py moon -22.908333 -43.196388
 ```
 
 You can use next options to change output.
