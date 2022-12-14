@@ -1,11 +1,13 @@
 """Console client."""
 import sys
+import csv
 from datetime import datetime, timedelta, timezone
 from skyfield.api import Loader, wgs84
 from cli_options import PARSER, VERSION
 
 COPYRIGHTS = '(C) by Vitaly Bogomolov 2022'
 OPTS = None
+DATE_MASK = '%Y-%m-%d:%H:%M'
 
 
 def make_loops(location, planet, start, tscale, length, step, border):
@@ -30,16 +32,21 @@ def make_loops(location, planet, start, tscale, length, step, border):
     return loops
 
 
-def dump_loops(loops):
-    """Dump loops data."""
-    for loop in loops:
-        for ptime, elevation, azimuth in loop:
-            print(
-              ptime.astimezone(timezone.utc),
-              round(azimuth.degrees, 6),
-              round(elevation.degrees, 6),
-            )
-        print()
+def dump_loops(out_file, loops, title):
+    """Dump loops data to csv."""
+    with open(out_file, 'w', encoding='utf-8') as out:
+        writer = csv.writer(out, delimiter=';', lineterminator='\n')
+        writer.writerow([title])
+        writer.writerow(['Time, UTC', 'Azimuth, degrees', 'Elevation, degrees'])
+
+        for loop in loops:
+            for ptime, elevation, azimuth in loop:
+                writer.writerow([
+                  ptime.astimezone(timezone.utc),
+                  round(azimuth.degrees, 6),
+                  round(elevation.degrees, 6),
+                ])
+            writer.writerow([])
 
 
 def main(argv, options):
@@ -56,11 +63,19 @@ def main(argv, options):
 
     start = datetime.utcnow()
     if options.utcnow:
-        start = datetime.strptime(options.utcnow, '%Y-%m-%d:%H:%M')
+        start = datetime.strptime(options.utcnow, DATE_MASK)
     start = start.replace(tzinfo=timezone.utc)
 
-    print(argv[0], 'from', start)
-    dump_loops(make_loops(
+    out_file = "{}_{}_{}.csv".format(
+      argv[0],
+      start.strftime(DATE_MASK),
+      (start + timedelta(seconds=options.length)).strftime(DATE_MASK)
+    ).replace(':', '-')
+    if options.output:
+        out_file = options.output
+
+    print('Processing...')
+    loops = make_loops(
       location,
       eph[argv[0]],
       start,
@@ -68,7 +83,11 @@ def main(argv, options):
       options.length,
       options.step,
       options.min_elevation
-    ))
+    )
+
+    print('Saving to {}...'.format(out_file))
+    dump_loops(out_file, loops, "{} from {}".format(argv[0], start))
+    print('Done.')
 
     return 0
 

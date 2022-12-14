@@ -33,5 +33,11 @@ PARSER.add_option(
   "--utc",
   dest="utcnow",
   default=None,
-  help="Set UTC time for start calculating. Format: 2022-01-31:23:00 Default is now."
+  help="Sets UTC time for start calculating. Format: 2022-01-31:23:00 Default is now."
+)
+PARSER.add_option(
+  "--output",
+  dest="output",
+  default=None,
+  help="Sets file name for output data in CSV format. Default file name construct automatically."
 )

@@ -2,6 +2,8 @@
 
 make test T=test_main.py
 """
+import os
+import glob
 from datetime import datetime, timezone
 from skyfield.api import wgs84, Loader
 from . import TestBase
@@ -26,7 +28,14 @@ class TestMain(TestBase):
 
         self.options.utcnow = '2022-12-12:10:00'
         assert main.main(['sun', str(self.sar_lat), str(self.sar_lon)], self.options) == 0
+
+        self.options.output = 'sun_xxx.csv'
+        assert main.main(['sun', str(self.sar_lat), str(self.sar_lon)], self.options) == 0
+
         main.make_loops = saved
+
+        for i in glob.glob('sun_*.csv'):
+            os.remove(i)
 
     def test_make_loops(self):
         """Function make_loops."""
@@ -45,4 +54,4 @@ class TestMain(TestBase):
           10
         )
         assert len(loops) == 2
-        assert main.dump_loops(loops) is None
+        assert main.dump_loops(self.build('out.csv'), loops, 'Test title') is None
