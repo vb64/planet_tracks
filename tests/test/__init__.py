@@ -2,6 +2,8 @@
 import os
 from unittest import TestCase
 
+BUILD_DIR = 'build'
+
 
 class TestBase(TestCase):
     """Base class for tests."""
@@ -15,7 +17,10 @@ class TestBase(TestCase):
         self.lat = "51.588843"
         self.lon = "45.962577"
 
+        if not os.path.isdir(BUILD_DIR):
+            os.mkdir(BUILD_DIR)
+
     @staticmethod
     def build(file_name):
         """Return path to file in 'build' folder."""
-        return os.path.join('build', file_name)
+        return os.path.join(BUILD_DIR, file_name)
