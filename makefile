@@ -1,4 +1,4 @@
-.PHONY: all tests setup flake8 lint exe
+.PHONY: all tests setup flake8 lint exe sun moon
 # make >debug.log 2>&1
 ifeq ($(OS),Windows_NT)
 PTEST = venv/Scripts/pytest.exe
@@ -20,6 +20,8 @@ TESTS = tests
 PYTEST = $(PTEST) --cov=$(SOURCE) --cov-report term:skip-covered
 PIP = $(PYTHON) -m pip install
 LINT = $(PYTHON) -m pylint
+RUN = $(PYTHON) $(SOURCE)/main.py
+SARATOV = 51.551750 45.964380
 
 test:
 	$(PTEST) --verbose -s $(TESTS)/test/$(T)
@@ -42,6 +44,12 @@ pep257:
 
 exe:
 	$(PYINSTALLER) --paths=$(SOURCE) --onefile --name planet-tracks $(SOURCE)/main.py --add-data '$(SKYBSP);$(SKYBSP)' --add-data 'venv/Lib/site-packages/$(SKYDATA);$(SKYDATA)'
+
+sun:
+	$(RUN) sun $(SARATOV)
+
+moon:
+	$(RUN) moon $(SARATOV)
 
 setup: setup_python setup_pip
 
